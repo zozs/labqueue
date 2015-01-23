@@ -1,0 +1,12 @@
+<?php
+/* Define this IP-address to have the right to remove the topmost student.
+ * Set this to an empty string to allow anyone to delete. */
+$ADMIN_IP = "192.168.0.4";
+
+/* Defines ip -> subject mappings to make everything look nicer. */
+$IP_SUBJECT_MAPPINGS = array(
+	"192.168.0.1" => "Alice",
+	"192.168.0.2" => "Bob",
+	"192.168.0.3" => "Eve"
+);
+?>

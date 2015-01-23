@@ -1,0 +1,53 @@
+@font-face {
+  font-family: 'Raleway';
+  src: url('fonts/raleway_thin-webfont.woff') format('woff');
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+  padding-top: 130px;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  padding-top: 5px;
+  background-color: #f5f5f5;
+  border-top: 2px solid #eee;
+}
+
+/* ---------- end */
+
+#buttons {
+  margin-bottom: 20px;
+}
+
+.navbar {
+  min-height: 100px;
+}
+
+.navbar-header {
+  margin-top: 25px;
+}
+
+.navbar-brand {
+  font-family: 'Raleway';
+  font-size: 38pt;
+}
+
+#queue table tr.highlight {
+  background-color: #dbffdb;
+  font-weight: bold;
+}
+

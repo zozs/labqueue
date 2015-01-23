@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="index.css" />
+
+    <title>Lab queue</title>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Lab queue</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="alert alert-danger" role="alert" id="button-error-box">
+        <strong>Error!</strong> <span class="error-box-text">Change a few things up and try submitting again.</span>
+      </div>
+
+      <section id="buttons">
+        <button id="help-button" type="button" class="btn btn-lg btn-primary">Help me!</button>
+        <button id="remove-button" type="button" class="btn btn-lg btn-danger">Remove</button>
+      </section>
+
+      <div class="alert alert-danger" role="alert" id="queue-error-box">
+        <strong>Error!</strong> <span class="error-box-text">Change a few things up and try submitting again.</span>
+      </div>
+
+      <section id="queue">
+        <div class="row">
+          <div class="col-md-6">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Computer</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <!-- AJAX REQUEST WILL FILL THIS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <footer class="footer">
+      <div class="container">
+        Lab queue by <strong>Linus Karlsson</strong>. Pull requests welcome at <a href="https://github.com/zozs/labqueue">https://github.com/zozs/labqueue</a><br />
+        Are you the teacher? <a id="admin-link" href="#">Click here</a> for the administrative interface.
+      </div>
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="jquery-2.1.3.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>
+
