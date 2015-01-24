@@ -17,6 +17,7 @@ try {
       delete_from_queue($db);
       break;
     default:
+      return_error(400, "Invalid request");
       break;
   }
 } catch (PDOException $e) {

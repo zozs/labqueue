@@ -28,17 +28,20 @@ $(document).ready(function() {
   });
 });
 
+function ajax_request(method) {
+  return $.ajax({
+    url: 'api.php',
+    type: method,
+    dataType: 'json',
+    timeout: 3000
+  });
+}
+
 function get_queue(launch_periodic) {
   if (launch_periodic === undefined) launch_periodic = true;
 
   var poll_interval = 5000;
-
-  $.ajax({
-    url: 'api.php',
-    type: 'GET',
-    dataType: 'json',
-    timeout: 3000
-  }).done(function(data) {
+  ajax_request('GET').done(function(data) {
     /* Update table. */
     show_queue(data.queue);
     show_error_box($('#queue-error-box'));
@@ -54,11 +57,7 @@ function get_queue(launch_periodic) {
 }
 
 function help_click() {
-  $.ajax({
-    url: 'api.php',
-    type: 'POST',
-    timeout: 3000
-  }).done(function() {
+  ajax_request('POST').done(function() {
     get_queue(false); /* Don't launch this periodically once more! */
     show_error_box($('#button-error-box'));
   }).fail(function() {
@@ -68,16 +67,16 @@ function help_click() {
 }
 
 function remove_click() {
-  $.ajax({
-    url: 'api.php',
-    type: 'DELETE',
-    timeout: 3000
-  }).done(function() {
+  ajax_request('DELETE').done(function() {
     get_queue(false); /* Don't launch this periodically once more! */
     show_error_box($('#button-error-box'));
-  }).fail(function() {
+  }).fail(function(jqxhr, textStatus, errorThrown) {
     /* Show some error. */
-    show_error_box($('#button-error-box'), 'Failed to pop queue!');
+    if (jqxhr.status == 403) {
+      show_error_box($('#button-error-box'), 'You are not an administrator!');
+    } else {
+      show_error_box($('#button-error-box'), 'Failed to pop queue!');
+    }
   });
 }
 
