@@ -17,6 +17,15 @@ $(document).ready(function() {
   $('#admin-link').click(function() {
     $('#remove-button').show();
   });
+
+  /* Offer restyling :) */
+  $('#haxxor-theme').click(function() {
+    $('#css-theme').attr('href', 'haxxor.css');
+  });
+
+  $('#standard-theme').click(function() {
+    $('#css-theme').attr('href', 'index.css');
+  });
 });
 
 function get_queue(launch_periodic) {
