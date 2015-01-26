@@ -40,6 +40,33 @@ function connect_database() {
 }
 
 function delete_from_queue($db) {
+  /* First we need to determine whether we want to remove the top of the queue
+   * (admin-mode), or if we want to remove a user's pending help request.
+   * Popping from the top is done by calling the api as DELETE api.php/top */
+  if ($_SERVER['PATH_INFO'] === '/top') {
+    delete_top_queue($db);
+  } else {
+    delete_subject_from_queue($db);
+  }
+}
+
+function delete_subject_from_queue($db) {
+  /* Delete the calling subject from the queue. */
+  $self_subject = map_ip_to_subject($_SERVER['REMOTE_ADDR']);
+
+  $sql = 'DELETE FROM queue WHERE subject=? AND done=0;';
+  $stmt = $db->prepare($sql);
+  $stmt->execute(array($self_subject));
+
+  if ($stmt->rowCount() != 0) {
+    /* Success! */
+    http_response_code(204);
+  } else {
+    return_error(404, "You don't have any help request to delete!");
+  }
+}
+
+function delete_top_queue($db) {
   /* Delete the top-most subject from the queue. */
   global $ADMIN_IP;
 
