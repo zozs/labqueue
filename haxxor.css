@@ -110,3 +110,14 @@ thead th {
 #dos-part {
   display: none;
 }
+
+.row:before,
+.row:after {
+  display: table;
+  content: " ";
+}
+
+.col-md-6 {
+  width: 50%;
+  float: left;
+}

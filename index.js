@@ -6,6 +6,23 @@ $(document).ready(function() {
   $('#button-error-box').hide();
   $('#queue-error-box').hide();
 
+  /* Adapt the interface for admin view. */
+  $('#huge-labels').hide();
+  $('#noadmin-part').hide();
+  $('#admin-link').click(function() {
+    $('#remove-button').show();
+    $('#huge-labels').show();
+    $('#noadmin-part').show();
+    $('#admin-part').hide();
+  });
+  $('#noadmin-link').click(function() {
+    $('#remove-button').hide();
+    $('#huge-labels').hide();
+    $('#noadmin-part').hide();
+    $('#admin-part').show();
+  });
+
+
   /* Config help button. */
   $('#help-button').click(help_click);
 
@@ -16,11 +33,6 @@ $(document).ready(function() {
   /* Config remove button. */
   $('#remove-button').hide();
   $('#remove-button').click(remove_click);
-
-  /* Show the delete button if this is the administrative interface. */
-  $('#admin-link').click(function() {
-    $('#remove-button').show();
-  });
 
   /* Offer restyling :) */
   $('#haxxor-theme').click(function() {
@@ -115,6 +127,8 @@ function show_error_box(box, message) {
 
 function show_queue(queue) {
   $('#queue tbody').empty();
+  $('#huge-label-current > span').empty();
+  $('#huge-label-next > span').empty();
 
   var found_self = false;
   for (var i = 0; i < queue.length; i++) {
@@ -127,6 +141,13 @@ function show_queue(queue) {
     }
 
     $('#queue tbody').append(row);
+
+    /* Also update current and next huge labels, used in admin view. */
+    if (i == 0) {
+      $('#huge-label-current > span').text(queue[i].subject);
+    } else if (i == 1) {
+      $('#huge-label-next > span').text(queue[i].subject);
+    }
   }
 
   if (found_self) {
