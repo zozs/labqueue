@@ -60,9 +60,13 @@ function help_click() {
   ajax_request('POST').done(function() {
     get_queue(false); /* Don't launch this periodically once more! */
     show_error_box($('#button-error-box'));
-  }).fail(function() {
+  }).fail(function(jqxhr, textStatus, errorThrown) {
     /* Show some error. */
-    show_error_box($('#button-error-box'), 'Failed to ask for help...');
+    if (jqxhr.status == 400) {
+      show_error_box($('#button-error-box'), 'You already have a help request.');
+    } else {
+      show_error_box($('#button-error-box'), 'Failed to ask for help...');
+    }
   });
 }
 

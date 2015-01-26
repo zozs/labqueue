@@ -32,7 +32,8 @@ function connect_database() {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             subject TEXT NOT NULL,
             added TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            done TIMESTAMP NULL DEFAULT NULL
+            done TIMESTAMP NOT NULL DEFAULT 0,
+            UNIQUE (subject, done)
           );';
   $db->exec($sql);
   return $db;
@@ -44,7 +45,7 @@ function delete_from_queue($db) {
 
   if ($ADMIN_IP === "" || $_SERVER['REMOTE_ADDR'] === $ADMIN_IP) {
     $sql = 'UPDATE queue SET done=CURRENT_TIMESTAMP WHERE id IN
-            (SELECT id FROM queue WHERE done IS NULL ORDER BY added, id LIMIT 1);';
+            (SELECT id FROM queue WHERE done=0 ORDER BY added, id LIMIT 1);';
     $db->exec($sql);
 
     /* Success! */
@@ -56,11 +57,10 @@ function delete_from_queue($db) {
 
 function get_queue($db) {
   /* Return JSON-encoded list of the queue. No options. */
-
-  /* TODO: Calculate and return the time the students have waited? */
   $self_subject = map_ip_to_subject($_SERVER['REMOTE_ADDR']);
 
-  $sql = 'SELECT subject, (subject=?) AS self FROM queue WHERE done IS NULL ORDER BY added, id;';
+  $sql = 'SELECT subject, (subject=?) AS self FROM queue
+          WHERE done=0 ORDER BY added, id;';
   $stmt = $db->prepare($sql);
   $stmt->execute(array($self_subject));
   $queue = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -91,7 +91,16 @@ function post_to_queue($db) {
    * Otherwise we just use the IP-address anyway. */
   $subject = map_ip_to_subject($_SERVER['REMOTE_ADDR']);
   $stmt = $db->prepare("INSERT INTO queue (subject) VALUES (?);");
-  $stmt->execute(array($subject));
+  try {
+    $stmt->execute(array($subject));
+  } catch (PDOException $e) {
+    /* If this was a duplicate insert, inform user about that. */
+    if ($e->getCode() === "23000") { /* Integrity constraint violation */
+      return_error(400, "Trying to add duplicate help request");
+    } else {
+      throw $e;
+    }
+  }
 
   /* Success! */
   http_response_code(204);
