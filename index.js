@@ -127,8 +127,9 @@ function show_error_box(box, message) {
 
 function show_queue(queue) {
   $('#queue tbody').empty();
-  $('#huge-label-current > span').empty();
-  $('#huge-label-next > span').empty();
+  /* Empty causes problems with haxxor css that i don't care to solve. */
+  $('#huge-label-current > span').html('&nbsp;');
+  $('#huge-label-next > span').html('&nbsp;');
 
   var found_self = false;
   for (var i = 0; i < queue.length; i++) {
