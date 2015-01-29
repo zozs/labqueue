@@ -7,21 +7,9 @@ $(document).ready(function() {
   $('#queue-error-box').hide();
 
   /* Adapt the interface for admin view. */
-  $('#huge-labels').hide();
-  $('#noadmin-part').hide();
-  $('#admin-link').click(function() {
-    $('#remove-button').show();
-    $('#huge-labels').show();
-    $('#noadmin-part').show();
-    $('#admin-part').hide();
-  });
-  $('#noadmin-link').click(function() {
-    $('#remove-button').hide();
-    $('#huge-labels').hide();
-    $('#noadmin-part').hide();
-    $('#admin-part').show();
-  });
-
+  interface_regular();
+  $('#admin-link').click(interface_admin);
+  $('#noadmin-link').click(interface_regular);
 
   /* Config help button. */
   $('#help-button').click(help_click);
@@ -86,6 +74,32 @@ function help_click() {
       show_error_box($('#button-error-box'), 'Failed to ask for help...');
     }
   });
+}
+
+function interface_admin() {
+  $('#remove-button').show();
+  $('#huge-labels').show();
+  $('#noadmin-part').show();
+  $('#admin-part').hide();
+
+  /* In admin mode, we listen for Page Down keypress, and use this to pop the
+   * top of the queue. Page down corresponds to the "Next" button on my (and
+   * virtually all other) powerpoint remotes. */
+  $(document).keydown(function(e) {
+    if (e.which == 34) { /* 34 == page down */
+      remove_click();
+    }
+  });
+}
+
+function interface_regular() {
+  $('#remove-button').hide();
+  $('#huge-labels').hide();
+  $('#noadmin-part').hide();
+  $('#admin-part').show();
+
+  /* Remove Page down listener. */
+  $(document).off("keydown");
 }
 
 function nevermind_click() {
