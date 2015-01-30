@@ -1,3 +1,5 @@
+var poll_interval = 3000; /* Yep. It's global. I know. */
+
 $(document).ready(function() {
   /* Starts a periodic AJAX query to get the queue. */
   get_queue();
@@ -46,7 +48,6 @@ function ajax_request(method, path_info) {
 function get_queue(launch_periodic) {
   if (launch_periodic === undefined) launch_periodic = true;
 
-  var poll_interval = 5000;
   ajax_request('GET').done(function(data) {
     /* Update table. */
     show_queue(data.queue);
@@ -81,6 +82,7 @@ function interface_admin() {
   $('#huge-labels').show();
   $('#noadmin-part').show();
   $('#admin-part').hide();
+  poll_interval = 1000; /* Speed up admin interface's polling. */
 
   /* In admin mode, we listen for Page Down keypress, and use this to pop the
    * top of the queue. Page down corresponds to the "Next" button on my (and
@@ -88,6 +90,7 @@ function interface_admin() {
   $(document).keydown(function(e) {
     if (e.which == 34) { /* 34 == page down */
       remove_click();
+      e.preventDefault();
     }
   });
 }
@@ -97,6 +100,7 @@ function interface_regular() {
   $('#huge-labels').hide();
   $('#noadmin-part').hide();
   $('#admin-part').show();
+  poll_interval = 3000;
 
   /* Remove Page down listener. */
   $(document).off("keydown");
