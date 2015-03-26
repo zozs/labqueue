@@ -77,11 +77,11 @@ body {
 
 #huge-labels {
   font-family: 'League Spartan';
-  font-size: 80px;
+  font-size: 5vw;
 }
 
 #huge-labels span {
-  font-size: 170px;
+  font-size: 10vw;
 }
 
 #modern-part {
