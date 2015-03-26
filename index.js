@@ -8,7 +8,7 @@ $(document).ready(function() {
   $('#button-error-box').hide();
   $('#queue-error-box').hide();
 
-  /* Adapt the interface for admin view. */
+  /* Adapt the interface for regular view. */
   interface_regular();
   $('#admin-link').click(interface_admin);
   $('#noadmin-link').click(interface_regular);
@@ -20,9 +20,9 @@ $(document).ready(function() {
   $('#nevermind-button').hide();
   $('#nevermind-button').click(nevermind_click);
 
-  /* Config remove button. */
-  $('#remove-button').hide();
+  /* Config remove and undelete button. */
   $('#remove-button').click(remove_click);
+  $('#undelete-button').click(undelete_click);
 
   /* Offer restyling :) */
   $('#haxxor-theme').click(function() {
@@ -78,7 +78,8 @@ function help_click() {
 }
 
 function interface_admin() {
-  $('#remove-button').show();
+  $('#regular-buttons').hide();
+  $('#admin-buttons').show();
   $('#huge-labels').show();
   $('#noadmin-part').show();
   $('#admin-part').hide();
@@ -86,23 +87,28 @@ function interface_admin() {
 
   /* In admin mode, we listen for Page Down keypress, and use this to pop the
    * top of the queue. Page down corresponds to the "Next" button on my (and
-   * virtually all other) powerpoint remotes. */
+   * virtually all other) powerpoint remotes. The same is applied to page up
+   * which is used to undo a removal of a student. */
   $(document).keydown(function(e) {
     if (e.which == 34) { /* 34 == page down */
       remove_click();
+      e.preventDefault();
+    } else if (e.which == 33) { /* 33 == page up */
+      undelete_click();
       e.preventDefault();
     }
   });
 }
 
 function interface_regular() {
-  $('#remove-button').hide();
+  $('#regular-buttons').show();
+  $('#admin-buttons').hide();
   $('#huge-labels').hide();
   $('#noadmin-part').hide();
   $('#admin-part').show();
   poll_interval = 3000;
 
-  /* Remove Page down listener. */
+  /* Remove Page down/page up listener. */
   $(document).off("keydown");
 }
 
@@ -176,4 +182,20 @@ function show_queue(queue) {
     $('#help-button').show();
     $('#nevermind-button').hide();
   }
+}
+
+function undelete_click() {
+  ajax_request('PUT').done(function() {
+    get_queue(false); /* Don't launch this periodically once more! */
+    show_error_box($('#button-error-box'));
+  }).fail(function(jqxhr, textStatus, errorThrown) {
+    /* Show some error. */
+    if (jqxhr.status == 403) {
+      show_error_box($('#button-error-box'), 'You are not an administrator!');
+    } else if (jqxhr.status == 400) {
+      show_error_box($('#button-error-box'), jqxhr.responseText);
+    } else {
+      show_error_box($('#button-error-box'), 'Failed to undo removal from queue!');
+    }
+  });
 }

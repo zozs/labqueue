@@ -45,7 +45,7 @@ a:hover {
   bottom: 0;
   width: 70%;
   /* Set the fixed height of the footer here */
-  height: 80px;
+  height: 90px;
   padding-top: 5px;
 }
 
@@ -55,7 +55,8 @@ thead th {
 
 /* ---------- end */
 
-#buttons {
+#regular-buttons,
+#admin-buttons {
   margin-bottom: 20px;
 }
 

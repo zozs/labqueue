@@ -16,6 +16,9 @@ try {
     case 'DELETE':
       delete_from_queue($db);
       break;
+    case 'PUT': /* abusing HTTP a bit here... */
+      undelete_top_queue($db);
+      break;
     default:
       return_error(400, "Invalid request");
       break;
@@ -43,7 +46,7 @@ function delete_from_queue($db) {
   /* First we need to determine whether we want to remove the top of the queue
    * (admin-mode), or if we want to remove a user's pending help request.
    * Popping from the top is done by calling the api as DELETE api.php/top */
-  if ($_SERVER['PATH_INFO'] === '/top') {
+  if (isset($_SERVER['PATH_INFO']) && $_SERVER['PATH_INFO'] === '/top') {
     delete_top_queue($db);
   } else {
     delete_subject_from_queue($db);
@@ -68,15 +71,20 @@ function delete_subject_from_queue($db) {
 
 function delete_top_queue($db) {
   /* Delete the top-most subject from the queue. */
+  ensure_admin();
+  $sql = 'UPDATE queue SET done=CURRENT_TIMESTAMP WHERE id IN
+          (SELECT id FROM queue WHERE done=0 ORDER BY added, id LIMIT 1);';
+  $db->exec($sql);
+
+  /* Success! */
+  http_response_code(204);
+}
+
+function ensure_admin() {
   global $ADMIN_IP;
 
   if ($ADMIN_IP === "" || $_SERVER['REMOTE_ADDR'] === $ADMIN_IP) {
-    $sql = 'UPDATE queue SET done=CURRENT_TIMESTAMP WHERE id IN
-            (SELECT id FROM queue WHERE done=0 ORDER BY added, id LIMIT 1);';
-    $db->exec($sql);
-
-    /* Success! */
-    http_response_code(204);
+    return TRUE;
   } else {
     return_error(403, "Unauthorized! You are not an administrator.");
   }
@@ -137,6 +145,25 @@ function return_error($status, $message) {
   /* Posts a nice error back to the client (not JSON-formatted). */
   http_response_code($status);
   die($message);
+}
+
+function undelete_top_queue($db) {
+  /* Restores the help request that was just previously deleted. */
+  ensure_admin();
+  $sql = 'UPDATE queue SET done=0 WHERE id IN
+          (SELECT id FROM queue WHERE done!=0 ORDER BY added DESC, id DESC LIMIT 1);';
+  try {
+    $db->exec($sql);
+  } catch (PDOException $e) {
+    /* If an undo would result in duplicate requests for a user, report so. */
+    if ($e->getCode() === "23000") { /* Integrity constraint violation. */
+      return_error(400, "Undo would result in duplicate requests for user");
+    } else {
+      throw $e;
+    }
+  }
+  /* Success! */
+  http_response_code(204);
 }
 
 ?>
