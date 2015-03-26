@@ -41,7 +41,8 @@ function ajax_request(method, path_info) {
     url: 'api.php' + path_info,
     type: method,
     dataType: 'json',
-    timeout: 3000
+    timeout: 3000,
+    cache: false
   });
 }
 
