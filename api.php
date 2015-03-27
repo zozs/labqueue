@@ -83,7 +83,7 @@ function delete_top_queue($db) {
 function ensure_admin() {
   global $ADMIN_IP;
 
-  if ($ADMIN_IP === "" || $_SERVER['REMOTE_ADDR'] === $ADMIN_IP) {
+  if ($ADMIN_IP === NULL || in_array($_SERVER['REMOTE_ADDR'], $ADMIN_IP, TRUE)) {
     return TRUE;
   } else {
     return_error(403, "Unauthorized! You are not an administrator.");
