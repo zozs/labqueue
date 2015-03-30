@@ -158,6 +158,16 @@ function remove_click() {
   });
 }
 
+function set_huge_label_text(hugelabel, text) {
+  hugelabel.text(text);
+  /* Check if text is a valid IPv4 address, if so, reduce text-size. */
+   if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(text)) {
+    hugelabel.addClass('ipaddr');
+  } else {
+    hugelabel.removeClass('ipaddr');
+  }
+}
+
 function show_error_box(box, message) {
   if (message === undefined) {
     /* Hide error box. */
@@ -188,9 +198,9 @@ function show_queue(queue) {
 
     /* Also update current and next huge labels, used in admin view. */
     if (i == 0) {
-      $('#huge-label-current > span').text(queue[i].subject);
+      set_huge_label_text($('#huge-label-current > span'), queue[i].subject);
     } else if (i == 1) {
-      $('#huge-label-next > span').text(queue[i].subject);
+      set_huge_label_text($('#huge-label-next > span'), queue[i].subject);
     }
   }
 
