@@ -8,8 +8,12 @@ $(document).ready(function() {
   $('#button-error-box').hide();
   $('#queue-error-box').hide();
 
-  /* Adapt the interface for regular view. */
-  interface_regular();
+  /* Adapt the interface for regular view, or admin view depending on hash. */
+  if (window.location.hash == '#admin') {
+    interface_admin();
+  } else {
+    interface_regular();
+  }
   $('#admin-link').click(interface_admin);
   $('#noadmin-link').click(interface_regular);
 
@@ -78,13 +82,16 @@ function help_click() {
   });
 }
 
-function interface_admin() {
+function interface_admin(evt) {
   $('#regular-buttons').hide();
   $('#admin-buttons').show();
   $('#huge-labels').show();
   $('#noadmin-part').show();
   $('#admin-part').hide();
   poll_interval = 1000; /* Speed up admin interface's polling. */
+
+  /* Set url. */
+  window.location.hash = "admin";
 
   /* In admin mode, we listen for Page Down keypress, and use this to pop the
    * top of the queue. Page down corresponds to the "Next" button on my (and
@@ -99,9 +106,13 @@ function interface_admin() {
       e.preventDefault();
     }
   });
+
+  if (evt !== undefined) {
+    evt.preventDefault();
+  }
 }
 
-function interface_regular() {
+function interface_regular(evt) {
   $('#regular-buttons').show();
   $('#admin-buttons').hide();
   $('#huge-labels').hide();
@@ -109,8 +120,15 @@ function interface_regular() {
   $('#admin-part').show();
   poll_interval = 3000;
 
+  /* Set url. */
+  window.location.hash = "";
+
   /* Remove Page down/page up listener. */
   $(document).off("keydown");
+
+  if (evt !== undefined) {
+    evt.preventDefault();
+  }
 }
 
 function nevermind_click() {
