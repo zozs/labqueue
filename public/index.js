@@ -1,32 +1,48 @@
-var poll_interval = 3000; /* Yep. It's global. I know. */
-
 $(document).ready(function() {
-  /* Starts a periodic AJAX query to get the queue. */
-  get_queue();
+  /* Connect to the queue server. The server will send the current queue. */
+  var socket = io();
+  socket.on('queue', function(msg) {
+    show_error_box($('#button-error-box'));
+    show_queue(msg.queue);
+  });
+
+  socket.on('queueFail', function(msg) {
+    // Show the error received from server.
+    console.log('Got error: ' + msg);
+    show_error_box($('#button-error-box'), msg);
+  });
+
+  // Handle dropped connection.
+  socket.on('reconnect', function(nbr) {
+    show_error_box($('#button-error-box')); // Clear error.
+  });
+
+  socket.on('reconnecting', function(nbr) {
+    show_error_box($('#button-error-box'), 'Connection to queue lost. Reconnecting...');
+  });
 
   /* Hide error messages by default. */
   $('#button-error-box').hide();
-  $('#queue-error-box').hide();
 
   /* Adapt the interface for regular view, or admin view depending on hash. */
   if (window.location.hash == '#admin') {
-    interface_admin();
+    interface_admin(undefined, socket);
   } else {
     interface_regular();
   }
-  $('#admin-link').click(interface_admin);
+  $('#admin-link').click(function(evt) { interface_admin(evt, socket); });
   $('#noadmin-link').click(interface_regular);
 
   /* Config help button. */
-  $('#help-button').click(help_click);
+  $('#help-button').click(function() { socket.emit('helpme'); });
 
   /* Config don't help button. */
   $('#nevermind-button').hide();
-  $('#nevermind-button').click(nevermind_click);
+  $('#nevermind-button').click(function() { socket.emit('nevermind'); });
 
   /* Config remove and undelete button. */
-  $('#remove-button').click(remove_click);
-  $('#undelete-button').click(undelete_click);
+  $('#remove-button').click(function() { socket.emit('delete'); });
+  $('#undelete-button').click(function() { socket.emit('undelete'); });
 
   /* Offer restyling :) */
   $('#haxxor-theme').click(function() {
@@ -38,57 +54,12 @@ $(document).ready(function() {
   });
 });
 
-function ajax_request(method, path_info) {
-  if (path_info === undefined) path_info = '';
-
-  return $.ajax({
-    url: 'api.php' + path_info,
-    type: method,
-    dataType: 'json',
-    timeout: 3000,
-    cache: false
-  });
-}
-
-function get_queue(launch_periodic) {
-  if (launch_periodic === undefined) launch_periodic = true;
-
-  ajax_request('GET').done(function(data) {
-    /* Update table. */
-    show_queue(data.queue);
-    show_error_box($('#queue-error-box'));
-  }).fail(function() {
-    /* Show some nice error message somewhere. */
-    show_error_box($('#queue-error-box'), 'Failed to fetch queue!');
-  }).always(function() {
-    /* Launch a new request. */
-    if (launch_periodic) {
-      setTimeout(get_queue, poll_interval);
-    }
-  });
-}
-
-function help_click() {
-  ajax_request('POST').done(function() {
-    get_queue(false); /* Don't launch this periodically once more! */
-    show_error_box($('#button-error-box'));
-  }).fail(function(jqxhr, textStatus, errorThrown) {
-    /* Show some error. */
-    if (jqxhr.status == 400) {
-      show_error_box($('#button-error-box'), 'You already have a help request.');
-    } else {
-      show_error_box($('#button-error-box'), 'Failed to ask for help...');
-    }
-  });
-}
-
-function interface_admin(evt) {
+function interface_admin(evt, socket) {
   $('#regular-buttons').hide();
   $('#admin-buttons').show();
   $('#huge-labels').show();
   $('#noadmin-part').show();
   $('#admin-part').hide();
-  poll_interval = 1000; /* Speed up admin interface's polling. */
 
   /* Set url. */
   window.location.hash = "admin";
@@ -99,10 +70,10 @@ function interface_admin(evt) {
    * which is used to undo a removal of a student. */
   $(document).keydown(function(e) {
     if (e.which == 34) { /* 34 == page down */
-      remove_click();
+      socket.emit('delete');
       e.preventDefault();
     } else if (e.which == 33) { /* 33 == page up */
-      undelete_click();
+      socket.emit('undelete');
       e.preventDefault();
     }
   });
@@ -118,7 +89,6 @@ function interface_regular(evt) {
   $('#huge-labels').hide();
   $('#noadmin-part').hide();
   $('#admin-part').show();
-  poll_interval = 3000;
 
   /* Set url. */
   window.location.hash = "";
@@ -129,33 +99,6 @@ function interface_regular(evt) {
   if (evt !== undefined) {
     evt.preventDefault();
   }
-}
-
-function nevermind_click() {
-  ajax_request('DELETE').done(function() {
-    get_queue(false);
-    show_error_box($('#button-error-box'));
-  }).fail(function(jqxhr, textStatus, errorThrown) {
-    if (jqxhr.status == 404) {
-      show_error_box($('#button-error-box'), 'You have no help request to delete.');
-    } else {
-      show_error_box($('#button-error-box'), 'Failed to remove self from queue!');
-    }
-  });
-}
-
-function remove_click() {
-  ajax_request('DELETE', '/top').done(function() {
-    get_queue(false); /* Don't launch this periodically once more! */
-    show_error_box($('#button-error-box'));
-  }).fail(function(jqxhr, textStatus, errorThrown) {
-    /* Show some error. */
-    if (jqxhr.status == 403) {
-      show_error_box($('#button-error-box'), 'You are not an administrator!');
-    } else {
-      show_error_box($('#button-error-box'), 'Failed to pop queue!');
-    }
-  });
 }
 
 function set_huge_label_text(hugelabel, text) {
@@ -189,7 +132,7 @@ function show_queue(queue) {
     var row = $('<tr>');
     row.append($('<td>').text(i + 1));
     row.append($('<td>').text(queue[i].subject));
-    if (queue[i].self === "1") {
+    if (queue[i].self == 1) {
       row.addClass('highlight');
       found_self = true;
     }
@@ -213,18 +156,3 @@ function show_queue(queue) {
   }
 }
 
-function undelete_click() {
-  ajax_request('PUT').done(function() {
-    get_queue(false); /* Don't launch this periodically once more! */
-    show_error_box($('#button-error-box'));
-  }).fail(function(jqxhr, textStatus, errorThrown) {
-    /* Show some error. */
-    if (jqxhr.status == 403) {
-      show_error_box($('#button-error-box'), 'You are not an administrator!');
-    } else if (jqxhr.status == 400) {
-      show_error_box($('#button-error-box'), jqxhr.responseText);
-    } else {
-      show_error_box($('#button-error-box'), 'Failed to undo removal from queue!');
-    }
-  });
-}

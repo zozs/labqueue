@@ -1,3 +1,4 @@
-config.php
+config.js
 queue.sqlite
+node_modules/
 *.swp
