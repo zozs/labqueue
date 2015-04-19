@@ -57,15 +57,31 @@ function delete_subject_from_queue($db) {
   /* Delete the calling subject from the queue. */
   $self_subject = map_ip_to_subject($_SERVER['REMOTE_ADDR']);
 
-  $sql = 'DELETE FROM queue WHERE subject=? AND done=0;';
+  /* First, if we are on the top of the queue, we implement the same behaviour
+   * as if it was the teacher that removed us (i.e. retain the row in the
+   * database. However, if we are not first, then just remove the row. */
+  $sql = 'SELECT id, subject FROM queue WHERE done=0 ORDER BY added, id LIMIT 1;';
   $stmt = $db->prepare($sql);
-  $stmt->execute(array($self_subject));
+  $stmt->execute();
+  $result = $stmt->fetch(PDO::FETCH_ASSOC);
+  if ($result !== FALSE && $result['subject'] === $self_subject) {
+    /* We are first in queue. Update our done column instead of removing! */
+    $sql = 'UPDATE queue SET done=CURRENT_TIMESTAMP WHERE id=?;';
+    $stmt = $db->prepare($sql);
+    $stmt->execute(array($result['id']));
 
-  if ($stmt->rowCount() != 0) {
-    /* Success! */
     http_response_code(204);
   } else {
-    return_error(404, "You don't have any help request to delete!");
+    $sql = 'DELETE FROM queue WHERE subject=? AND done=0;';
+    $stmt = $db->prepare($sql);
+    $stmt->execute(array($self_subject));
+
+    if ($stmt->rowCount() != 0) {
+      /* Success! */
+      http_response_code(204);
+    } else {
+      return_error(404, "You don't have any help request to delete!");
+    }
   }
 }
 
