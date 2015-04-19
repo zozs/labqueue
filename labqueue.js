@@ -19,17 +19,19 @@ db.run('CREATE TABLE IF NOT EXISTS queue (' +
 app.use(express.static(__dirname + '/public'));
 
 // Listen for socket.io stuff.
-io.on('connection', function(socket){
+io.on('connection', function(socket) {
   var remote_ip = socket.request.connection.remoteAddress;
   var subject = ip_to_subject(remote_ip);
   var is_admin = (config.admins.indexOf(remote_ip) > -1);
   console.log(subject + ' connected. Administrator?: ' + is_admin);
+
+  // First send the client name to the client.
+  socket.emit('clientname', subject);
   
   // Immediately send the current queue to the new client.
   var send_queue = function(receiver) {
-    var sql = 'SELECT subject, (subject=?) AS self FROM queue ' +
-              'WHERE done=0 ORDER BY added, id;'
-    db.all(sql, subject, function(err, rows) {
+    var sql = 'SELECT subject FROM queue WHERE done=0 ORDER BY added, id;';
+    db.all(sql, function(err, rows) {
       check_error(err, socket, function() {
         receiver.emit('queue', { queue: rows });
       });
@@ -102,7 +104,7 @@ io.on('connection', function(socket){
   }
 });
 
-http.listen(3000);
+http.listen(3000, '0.0.0.0');
 
 function check_error(err, socket, success_handler) {
   if (err) {

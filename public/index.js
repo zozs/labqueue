@@ -1,9 +1,15 @@
 $(document).ready(function() {
   /* Connect to the queue server. The server will send the current queue. */
   var socket = io();
+  var client_name;
+
+  socket.on('clientname', function(msg) {
+    client_name = msg; // Stores client name so we know who we are.
+  });
+
   socket.on('queue', function(msg) {
     show_error_box($('#button-error-box'));
-    show_queue(msg.queue);
+    show_queue(msg.queue, client_name);
   });
 
   socket.on('queueFail', function(msg) {
@@ -121,7 +127,7 @@ function show_error_box(box, message) {
   }
 }
 
-function show_queue(queue) {
+function show_queue(queue, client_name) {
   $('#queue tbody').empty();
   /* Empty causes problems with haxxor css that i don't care to solve. */
   $('#huge-label-current > span').html('&nbsp;');
@@ -132,7 +138,7 @@ function show_queue(queue) {
     var row = $('<tr>');
     row.append($('<td>').text(i + 1));
     row.append($('<td>').text(queue[i].subject));
-    if (queue[i].self == 1) {
+    if (queue[i].subject == client_name) {
       row.addClass('highlight');
       found_self = true;
     }
