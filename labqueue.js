@@ -40,13 +40,12 @@ io.on('connection', function(socket) {
   send_queue(socket);
 
   socket.on('helpme', function(msg) {
-    console.log(subject + ' asked for help.');
     db.run('INSERT INTO queue (subject) VALUES (?);', subject, function(err) {
       if (err) {
-        console.log(JSON.stringify(err));
         if (err.errno == 19) { /* SQLITE_CONSTRAINT */
           socket.emit('queueFail', 'You already have a help request!');
         } else {
+          console.log(JSON.stringify(err));
           socket.emit('queueFail', 'Failed to ask for help...');
         }
       } else {
@@ -57,17 +56,31 @@ io.on('connection', function(socket) {
   });
 
   socket.on('nevermind', function(msg) {
-    console.log(subject + ' figured it out on their own.');
-    
-    db.run('DELETE FROM queue WHERE subject=? AND done=0;', subject, function(err) {
-      var changes = this.changes;
-      check_error(err, socket, function() {
-        if (changes == 0) {
-          socket.emit('queueFail', "You have no help request to delete!");
-        } else {
+    // If a student changes his or her mind and don't want help, we usually want
+    // to just delete the entry and pretend it never existed. However, if the
+    // student was first in queue, we retain the entry just like if the teacher
+    // would have removed it.
+    var sql = 'SELECT id, subject FROM queue WHERE done=0 ORDER BY added, id LIMIT 1;';
+    db.get(sql, function(err, row) {
+      if (row && row.subject == subject) {
+        // We are first in queue. Pretend it is a teacher delete.
+        delete_top(socket, function() {
           send_queue(io);
-        }
-      });
+        });
+      } else {
+        // Delete our help request like it never existed.
+        var sql2 = 'DELETE FROM queue WHERE subject=? AND done=0;';
+        db.run(sql2, subject, function(err) {
+          var changes = this.changes;
+          check_error(err, socket, function() {
+            if (changes == 0) {
+              socket.emit('queueFail', "You have no help request to delete!");
+            } else {
+              send_queue(io);
+            }
+          });
+        });
+      }
     });
   });
 
@@ -87,12 +100,8 @@ io.on('connection', function(socket) {
     });
 
     socket.on('delete', function(msg) {
-      var sql = 'UPDATE queue SET done=CURRENT_TIMESTAMP WHERE id IN ' +
-                '(SELECT id FROM queue WHERE done=0 ORDER BY added, id LIMIT 1);';
-      db.run(sql, function(err) {
-        check_error(err, socket, function() {
-          send_queue(io);
-        });
+      delete_top(socket, function() {
+        send_queue(io);
       });
     });
   } else {
@@ -113,6 +122,16 @@ function check_error(err, socket, success_handler) {
   } else {
     success_handler();
   }
+}
+
+function delete_top(socket, send_queue_func) {
+  var sql = 'UPDATE queue SET done=CURRENT_TIMESTAMP WHERE id IN ' +
+            '(SELECT id FROM queue WHERE done=0 ORDER BY added, id LIMIT 1);';
+  db.run(sql, function(err) {
+    check_error(err, socket, function() {
+      send_queue_func();
+    });
+  });
 }
 
 function ip_to_subject(ip) {
