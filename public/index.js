@@ -1,29 +1,37 @@
-$(document).ready(function() {
+/*
+ * Labqueue. Copyright (c) 2015, Linus Karlsson
+ * See LICENSE file at https://github.com/zozs/labqueue
+ */
+/*jslint indent: 2, browser: true */
+/*global $, io, console*/
+"use strict";
+
+$(document).ready(function () {
   /* Connect to the queue server. The server will send the current queue. */
   var socket = io();
   var client_name;
 
-  socket.on('clientname', function(msg) {
+  socket.on('clientname', function (msg) {
     client_name = msg; // Stores client name so we know who we are.
   });
 
-  socket.on('queue', function(msg) {
+  socket.on('queue', function (msg) {
     show_error_box($('#button-error-box'));
     show_queue(msg.queue, client_name);
   });
 
-  socket.on('queueFail', function(msg) {
+  socket.on('queueFail', function (msg) {
     // Show the error received from server.
     console.log('Got error: ' + msg);
     show_error_box($('#button-error-box'), msg);
   });
 
   // Handle dropped connection.
-  socket.on('reconnect', function(nbr) {
+  socket.on('reconnect', function (/*nbr*/) {
     show_error_box($('#button-error-box')); // Clear error.
   });
 
-  socket.on('reconnecting', function(nbr) {
+  socket.on('reconnecting', function (/*nbr*/) {
     show_error_box($('#button-error-box'), 'Connection to queue lost. Reconnecting...');
   });
 
@@ -31,31 +39,31 @@ $(document).ready(function() {
   $('#button-error-box').hide();
 
   /* Adapt the interface for regular view, or admin view depending on hash. */
-  if (window.location.hash == '#admin') {
+  if (window.location.hash === '#admin') {
     interface_admin(undefined, socket);
   } else {
     interface_regular();
   }
-  $('#admin-link').click(function(evt) { interface_admin(evt, socket); });
+  $('#admin-link').click(function (evt) { interface_admin(evt, socket); });
   $('#noadmin-link').click(interface_regular);
 
   /* Config help button. */
-  $('#help-button').click(function() { socket.emit('helpme'); });
+  $('#help-button').click(function () { socket.emit('helpme'); });
 
   /* Config don't help button. */
   $('#nevermind-button').hide();
-  $('#nevermind-button').click(function() { socket.emit('nevermind'); });
+  $('#nevermind-button').click(function () { socket.emit('nevermind'); });
 
   /* Config remove and undelete button. */
-  $('#remove-button').click(function() { socket.emit('delete'); });
-  $('#undelete-button').click(function() { socket.emit('undelete'); });
+  $('#remove-button').click(function () { socket.emit('delete'); });
+  $('#undelete-button').click(function () { socket.emit('undelete'); });
 
   /* Offer restyling :) */
-  $('#haxxor-theme').click(function() {
+  $('#haxxor-theme').click(function () {
     $('#css-theme').attr('href', 'haxxor.css');
   });
 
-  $('#standard-theme').click(function() {
+  $('#standard-theme').click(function () {
     $('#css-theme').attr('href', 'index.css');
   });
 });
@@ -74,11 +82,11 @@ function interface_admin(evt, socket) {
    * top of the queue. Page down corresponds to the "Next" button on my (and
    * virtually all other) powerpoint remotes. The same is applied to page up
    * which is used to undo a removal of a student. */
-  $(document).keydown(function(e) {
-    if (e.which == 34) { /* 34 == page down */
+  $(document).keydown(function (e) {
+    if (e.which === 34) { /* 34 == page down */
       socket.emit('delete');
       e.preventDefault();
-    } else if (e.which == 33) { /* 33 == page up */
+    } else if (e.which === 33) { /* 33 == page up */
       socket.emit('undelete');
       e.preventDefault();
     }
@@ -110,7 +118,7 @@ function interface_regular(evt) {
 function set_huge_label_text(hugelabel, text) {
   hugelabel.text(text);
   /* Check if text is a valid IPv4 address, if so, reduce text-size. */
-   if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(text)) {
+  if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(text)) {
     hugelabel.addClass('ipaddr');
   } else {
     hugelabel.removeClass('ipaddr');
@@ -146,9 +154,9 @@ function show_queue(queue, client_name) {
     $('#queue tbody').append(row);
 
     /* Also update current and next huge labels, used in admin view. */
-    if (i == 0) {
+    if (i === 0) {
       set_huge_label_text($('#huge-label-current > span'), queue[i].subject);
-    } else if (i == 1) {
+    } else if (i === 1) {
       set_huge_label_text($('#huge-label-next > span'), queue[i].subject);
     }
   }
