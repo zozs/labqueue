@@ -10,27 +10,19 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var config = require('./config');
+var config = require('config');
 
 // For automated testing purposes, we may start the server with a special flag.
 // Do NOT use this flag during normal operation!
 var testMode = false;
 
-if (process.argv.length === 3 && process.argv[2] === '--testing') {
+if (process.env.NODE_ENV === 'test') {
   testMode = true;
-  // Load special config for testing.
-  config = require('./config-test');
   console.log('WARNING! Test mode activated. Do NOT use in production!');
 }
 
-// Prepare database.
-var databaseFile = 'queue.sqlite';
-if (testMode) {
-  databaseFile = ':memory:';
-}
-
 var sqlite3 = require('sqlite3');
-var db = new sqlite3.Database(databaseFile);
+var db = new sqlite3.Database(config.get('databaseFile'));
 
 db.run('CREATE TABLE IF NOT EXISTS queue (' +
        'id INTEGER PRIMARY KEY AUTOINCREMENT,' +
@@ -63,7 +55,7 @@ io.on('connection', function (socket) {
   }
 
   var subject = ip_to_subject(remote_ip);
-  var is_admin = (config.admins.indexOf(remote_ip) > -1);
+  var is_admin = (config.get('admins').indexOf(remote_ip) > -1);
   //console.log(subject + ' connected. Administrator?: ' + is_admin);
 
   // First send the client name to the client.
@@ -166,7 +158,7 @@ io.on('connection', function (socket) {
   }
 });
 
-http.listen(3000, '0.0.0.0');
+http.listen(config.get('port'), config.get('listenAddress'));
 
 function check_error(err, socket, success_handler) {
   if (err) {
@@ -178,8 +170,8 @@ function check_error(err, socket, success_handler) {
 }
 
 function ip_to_subject(ip) {
-  if (ip in config.ip_subject) {
-    return config.ip_subject[ip];
+  if (ip in config.get('ip_subject')) {
+    return config.get('ip_subject')[ip];
   } else {
     return ip;
   }

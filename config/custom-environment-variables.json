@@ -1,0 +1,13 @@
+{
+  "admins": {
+    "__name": "LABQUEUE_ADMINS",
+    "__format": "json"
+  },
+  "ip_subject": {
+    "__name": "LABQUEUE_IP_SUBJECT",
+    "__format": "json"
+  },
+  "port": "LABQUEUE_PORT",
+  "listenAddress": "LABQUEUE_LISTEN_ADDRESS",
+  "databaseFile": "LABQUEUE_DATABASE_FILE"
+}
