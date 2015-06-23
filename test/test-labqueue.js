@@ -1,7 +1,7 @@
 var should = require('should');
 var io = require('socket.io-client');
 
-var socketURL = 'http://localhost:3000';
+var socketURL = 'http://127.0.0.1:3000';
 
 var client1details = { ip: '192.0.2.1', name: 'C1' };
 var options1 = {

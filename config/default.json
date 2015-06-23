@@ -1,0 +1,7 @@
+{
+  "databaseFile": "queue.sqlite",
+  "port": 3000,
+  "listenAddress": "0.0.0.0",
+  "admins": [],
+  "ip_subject": {}
+}
