@@ -9,5 +9,6 @@
   },
   "port": "LABQUEUE_PORT",
   "listenAddress": "LABQUEUE_LISTEN_ADDRESS",
-  "databaseFile": "LABQUEUE_DATABASE_FILE"
+  "databaseFile": "LABQUEUE_DATABASE_FILE",
+  "synchronousDb": "LABQUEUE_SYNCHRONOUS_DB"
 }

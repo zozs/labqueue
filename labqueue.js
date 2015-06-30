@@ -24,6 +24,11 @@ if (process.env.NODE_ENV === 'test') {
 var sqlite3 = require('sqlite3');
 var db = new sqlite3.Database(config.get('databaseFile'));
 
+if (!config.synchronousDb) {
+  /* Disable synchronous database writes, e.g. when running on SD-card. */
+  db.run('PRAGMA synchronous = OFF;');
+}
+
 db.run('CREATE TABLE IF NOT EXISTS queue (' +
        'id INTEGER PRIMARY KEY AUTOINCREMENT,' +
        'subject TEXT NOT NULL,' +
