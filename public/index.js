@@ -72,8 +72,6 @@ function interface_admin(evt, socket) {
   $('#regular-buttons').hide();
   $('#admin-buttons').show();
   $('#huge-labels').show();
-  $('#noadmin-part').show();
-  $('#admin-part').hide();
 
   /* Set url. */
   window.location.hash = "admin";
@@ -101,8 +99,6 @@ function interface_regular(evt) {
   $('#regular-buttons').show();
   $('#admin-buttons').hide();
   $('#huge-labels').hide();
-  $('#noadmin-part').hide();
-  $('#admin-part').show();
 
   /* Set url. */
   window.location.hash = "";

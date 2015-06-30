@@ -15,7 +15,7 @@ html {
 
 body {
   /* Margin bottom by footer height */
-  margin-bottom: 60px;
+  margin-bottom: 70px;
   padding-top: 50px;
   font-family: 'DOS';
   background-color: #000084;
@@ -45,7 +45,7 @@ a:hover {
   bottom: 0;
   width: 70%;
   /* Set the fixed height of the footer here */
-  height: 90px;
+  height: 70px;
   padding-top: 5px;
 }
 
