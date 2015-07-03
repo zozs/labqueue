@@ -4,5 +4,6 @@
   "listenAddress": "0.0.0.0",
   "admins": [],
   "ip_subject": {},
-  "synchronousDb": true
+  "synchronousDb": true,
+  "whitelist": []
 }
