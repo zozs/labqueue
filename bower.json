@@ -1,0 +1,23 @@
+{
+  "name": "labqueue",
+  "main": "labqueue.js",
+  "version": "1.1.0",
+  "homepage": "https://github.com/zozs/labqueue",
+  "authors": [
+    "Linus Karlsson <linus.karlsson@eit.lth.se>"
+  ],
+  "description": "Maintains a queue of students asking for help on a lab or exercise session.",
+  "license": "ISC",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.5",
+    "jquery": "~2.1.4"
+  }
+}

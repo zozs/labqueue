@@ -1,6 +1,6 @@
 {
   "name": "labqueue",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Maintains a queue of students asking for help on a lab or exercise session.",
   "author": "Linus Karlsson <linus.karlsson@eit.lth.se>",
   "repository": {
@@ -21,6 +21,7 @@
   },
   "license": "ISC",
   "scripts": {
-    "test": "NODE_ENV=test mocha"
+    "test": "NODE_ENV=test mocha",
+    "postinstall": "bower install"
   }
 }
