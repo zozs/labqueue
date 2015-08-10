@@ -2,7 +2,23 @@
 Maintains a list of students that needs help in lab or exercise sessions.
 
 ## License
-Labqueue is made available under the ISC license. See the file LICENSE for details.
+Labqueue is made available under the ISC license. See the file LICENSE, or the license text below.
+
+```
+Copyright (c) 2015, Linus Karlsson
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+```
 
 The haxxor theme is inspired by the [BOOTSTRA.386 theme](https://github.com/kristopolous/BOOTSTRA.386/).
 
@@ -31,5 +47,5 @@ An object containing mappings between IP-address and human readable names. If a 
 Whether SQLite should wait for writes to sync to disk or not. When set to `false`, the command `PRAGMA synchronous = OFF;` will be sent to SQLite, thus disabling synchronous writes. Setting this to `false` may lead to a corrupt database in case of power-loss during a transaction, but may be required to achieve acceptable performance when the disk is slow (e.g. an SD-card). Example: `true`
 
 ###### whitelist
-A whitelist of IP-addresses allowed to send help requests to this host. If the object is empty (the default setting), requests are allowed from any host. Everyone can always view the queue. Note that if this object is non-empty, an administrator listed in `admins` must also be listed here to get any access. Example: `["192.0.2.1", "192.0.2.2", "192.0.2.3"]`
+A whitelist of IP-addresses allowed to send help requests to this host. If the list is empty (the default setting), requests are allowed from any host. Everyone can always view the queue. Note that if this object is non-empty, an administrator listed in `admins` must also be listed here to get any access. Example: `["192.0.2.1", "192.0.2.2", "192.0.2.3"]`
 
