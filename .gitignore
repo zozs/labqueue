@@ -3,3 +3,4 @@ queue.sqlite
 node_modules/
 *.swp
 public/bower_components/
+config/local.json
