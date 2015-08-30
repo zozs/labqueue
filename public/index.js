@@ -79,12 +79,19 @@ function interface_admin(evt, socket) {
   /* In admin mode, we listen for Page Down keypress, and use this to pop the
    * top of the queue. Page down corresponds to the "Next" button on my (and
    * virtually all other) powerpoint remotes. The same is applied to page up
-   * which is used to undo a removal of a student. */
+   * which is used to undo a removal of a student.
+   *
+   * Key codes:
+   *   8: Backspace
+   *  13: Enter
+   *  33: Page up
+   *  34: Page down
+   */
   $(document).keydown(function (e) {
-    if (e.which === 34) { /* 34 == page down */
+    if (e.which === 34 || e.which === 13) { /* Page down or Enter */
       socket.emit('delete');
       e.preventDefault();
-    } else if (e.which === 33) { /* 33 == page up */
+    } else if (e.which === 33 || e.which === 8) { /* Page up or Backspace */
       socket.emit('undelete');
       e.preventDefault();
     }
