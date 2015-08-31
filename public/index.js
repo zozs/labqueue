@@ -120,11 +120,11 @@ function interface_regular(evt) {
 
 function set_huge_label_text(hugelabel, text) {
   hugelabel.text(text);
-  /* Check if text is a valid IPv4 address, if so, reduce text-size. */
-  if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(text)) {
-    hugelabel.addClass('ipaddr');
+  // The default (large) text size only works up to ~6 chars.
+  if (text.length > 6) {
+    hugelabel.addClass('longhost');
   } else {
-    hugelabel.removeClass('ipaddr');
+    hugelabel.removeClass('longhost');
   }
 }
 

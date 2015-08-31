@@ -120,7 +120,8 @@ io.on('connection', function (socket) {
     if (is_admin) {
       socket.on('undelete', function () {
         var sql = 'UPDATE queue SET done=0,removedSelf=NULL WHERE id IN ' +
-                  '(SELECT id FROM queue WHERE done!=0 ORDER BY added DESC, id DESC LIMIT 1);';
+                  '(SELECT id FROM queue WHERE done!=0 AND removedSelf=0 ' +
+                  ' ORDER BY done DESC, id DESC LIMIT 1);';
         db.run(sql, function (err) {
           if (err && err.errno === 19) {
             socket.emit('queueFail', 'Undo would result in duplicate help requests for user.');

@@ -175,7 +175,7 @@ describe("Labqueue", function() {
       client1.once('queue', function() {
         client2.emit('undelete');
         client2.once('queueFail', function() {
-        checkQueue([], done);
+          checkQueue([], done);
         });
       });
     });
@@ -208,6 +208,30 @@ describe("Labqueue", function() {
             });
           });
         }, 1000); // <- delay end.
+      });
+    });
+  });
+
+  it('should not restore student-removed items when undeleting', function (done) {
+    // yeah we really need async.waterfall
+    client1.emit('helpme');
+    client1.once('queue', function (q) {
+      client2.emit('helpme');
+      client2.once('queue', function (q) {
+        client2.emit('nevermind');
+        client2.once('queue', function (q) {
+          client1.emit('delete');
+          client1.once('queue', function (q) {
+            // we now have an empty queue. when undeleting we should get client1
+            // back, since that was the last one the admin deleted.
+            checkQueue([], function () {
+              client1.emit('undelete');
+              client1.once('queue', function (q) {
+                checkQueue([1], done);
+              });
+            });
+          });
+        });
       });
     });
   });

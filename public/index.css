@@ -84,8 +84,8 @@ body {
   font-size: 10vw;
 }
 
-#huge-labels span.ipaddr {
-  font-size: 3vw;
+#huge-labels span.longhost {
+  font-size: 5vw;
 }
 
 #modern-part {
