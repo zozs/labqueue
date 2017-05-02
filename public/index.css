@@ -1,4 +1,4 @@
-@import url('bower_components/bootstrap/dist/css/bootstrap.min.css');
+@import url('bundle/styles.css');
 
 @font-face {
   font-family: 'Raleway';
@@ -43,8 +43,7 @@ body {
 
 /* ---------- end */
 
-#regular-buttons,
-#admin-buttons {
+.labqueue-buttons {
   margin-bottom: 20px;
 }
 
@@ -61,30 +60,30 @@ body {
   font-size: 38pt;
 }
 
-#queue table tr.highlight {
+.queue table tr.highlight {
   background-color: #dbffdb;
   font-weight: bold;
 }
 
-#huge-label-current {
+.huge-label-current {
   text-align: right;
   padding-right: 80px;
 }
 
-#huge-label-next {
+.huge-label-next {
   padding-left: 80px;
 }
 
-#huge-labels {
+.huge-labels {
   font-family: 'League Spartan';
   font-size: 5vw;
 }
 
-#huge-labels span {
+.huge-labels span {
   font-size: 10vw;
 }
 
-#huge-labels span.longhost {
+.huge-labels span.longhost {
   font-size: 5vw;
 }
 

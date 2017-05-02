@@ -5,7 +5,7 @@ Maintains a list of students that needs help in lab or exercise sessions.
 Labqueue is made available under the ISC license. See the file LICENSE, or the license text below.
 
 ```
-Copyright (c) 2015, Linus Karlsson
+Copyright (c) 2015, 2016, 2017 Linus Karlsson
 
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
@@ -21,6 +21,18 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ```
 
 The haxxor theme is inspired by the [BOOTSTRA.386 theme](https://github.com/kristopolous/BOOTSTRA.386/).
+
+## Installation and running
+The client side is based on ReactJS, and will need to be run through Babel and Webpack to fix things up. In addition to this,
+npm needs to be used to download a bunch of packages as well.
+
+```
+$ npm install
+$ npm run build-production
+$ node labqueue.js
+```
+
+You may then connect to `http://localhost:3000` to see it in action.
 
 ## Configuration
 The configuration files are formatted in JSON. A good starting point is the file `config/default.json`. Labqueue uses `node-config` to manage its configuration files, so be sure to utilise its features when deploying the application. Of particular interest may be the possibility for different configuration files per host and per environment. See https://github.com/lorenwest/node-config/wiki/Configuration-Files for examples.

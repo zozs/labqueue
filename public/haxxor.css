@@ -55,8 +55,7 @@ thead th {
 
 /* ---------- end */
 
-#regular-buttons,
-#admin-buttons {
+.labqueue-buttons {
   margin-bottom: 20px;
 }
 
@@ -82,7 +81,7 @@ thead th {
   background-color: transparent;
 }
 
-#queue table tr.highlight {
+.queue table tr.highlight {
   background-color: #ccc;
   color: black;
 }
