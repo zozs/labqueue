@@ -1,4 +1,7 @@
 # labqueue
+
+[![Build Status](https://travis-ci.org/zozs/labqueue.svg?branch=react-client)](https://travis-ci.org/zozs/labqueue)
+
 Maintains a list of students that needs help in lab or exercise sessions.
 
 ## License
