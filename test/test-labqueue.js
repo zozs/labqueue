@@ -1,5 +1,6 @@
 var should = require('should');
 var io = require('socket.io-client');
+const app = require('../app')
 
 var socketURL = 'http://127.0.0.1:3000';
 
@@ -25,6 +26,10 @@ var clients = [client1details, client2details, client3details];
 
 describe("Labqueue", function() {
   var client1, client2;
+
+  before((done) => app.start(done))
+
+  after((done) => app.stop(done))
 
   beforeEach(function(done) {
     client1 = io.connect(socketURL, options1);
