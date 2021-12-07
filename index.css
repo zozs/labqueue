@@ -1,0 +1,9 @@
+ol li.list-group-item { 
+  list-style: decimal inside;
+  display: list-item;
+}
+
+.jumbotron {
+  background-image: linear-gradient(to right, #8bb5c0, #f8f8f8);
+}
+

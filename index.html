@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Lab queue</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="index.css" rel="stylesheet">
+  </head>
+
+  <body>
+      <div class="jumbotron text-center">
+    <div class="container">
+      <!-- Main component for a primary marketing message or call to action -->
+        <h1>Lab queue</h1>
+        <p>
+          <a href="https://github.com/zozs/labqueue" class="btn btn-primary btn-lg">View on GitHub</a>
+        </p>
+      </div>
+    </div>
+    
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6"> <!-- features client -->
+          <h3>Features <small>from the student's perspective</small></h3>
+
+          <ul class="list-group">
+            <li class="list-group-item">
+              <h4 class="list-group-item-heading">Keep track of the queue</h4>
+              <p class="list-group-item-text">
+                Presents a list of all students currently requesting help, in order, such that the student
+                who first asked for help is at the top of the queue. Students can easily see their current
+                position in the queue by looking at the green line.
+              </p>
+            </li>
+            <li class="list-group-item">
+              <h4 class="list-group-item-heading">Hop in and out</h4>
+              <p class="list-group-item-text">
+                Students may enter the queue by pressing the blue
+                <button type="button" class="btn btn-primary btn-sm">Help me!</button>
+                button.
+              </p>
+              <p class="list-group-item-text">
+                If they solve the problem themselves, they can easily hop out of the queue by pressing the green
+                <button type="button" class="btn btn-success btn-sm">Don't help me!</button>
+                button.
+              </p>
+            </li>
+            <li class="list-group-item">
+              <h4 class="list-group-item-heading">Keep on working</h4>
+              <p class="list-group-item-text">
+                No need to keep your hand raised and constantly looking for the teacher. Keep on working and rest
+                assured that you will get help as soon as possible.
+              </p>
+            </li>
+          </ul>
+        </div>
+
+        <div class="col-md-6"> <!-- screenshot client -->
+          <h3>&nbsp;</h3>
+          <img src="student-screenshot.png" class="img-responsive img-thumbnail" alt="Student screenshot">
+        </div>
+      </div>
+
+      <div class="row"> <!-- teacher -->
+        <div class="col-md-6"> <!-- screenshot teacher -->
+          <h3>&nbsp;</h3>
+          <img src="teacher-screenshot.png" class="img-responsive img-thumbnail" alt="Teacher screenshot">
+        </div>
+        <div class="col-md-6"> <!-- features teacher -->
+          <h3>Features <small>from the teacher's perspective</small></h3>
+
+          <ul class="list-group">
+            <li class="list-group-item">
+              <h4 class="list-group-item-heading">See who's next in queue</h4>
+              <p class="list-group-item-text">
+                In the administrative interface, suitable for a wall-mounted monitor, you can easily see
+                the first two positions of the queue from anywhere in the room.
+                The complete queue can also be seen, although in a smaller font.
+              </p>
+            </li>
+            <li class="list-group-item">
+              <h4 class="list-group-item-heading">Control the queue using a remote</h4>
+              <p class="list-group-item-text">
+                By using a wireless presentation remote, you can easily remove students
+                after helping them, thus moving forward in the queue.
+              <!--</p>
+              <p class="list-group-item-text">-->
+                Press the <em>Next</em> button on your remote to remove the topmost student from the queue.
+              <!--</p>
+              <p class="list-group-item-text">-->
+                Did you remove a student by mistake? Don't worry, just press the <em>Back</em>
+                button on your remote to correct your mistake.
+              
+              <!--</p>
+              <p class="list-group-item-text">-->
+                Lab queue works with most presentation controllers.
+              </p>
+            </li>
+            <li class="list-group-item">
+              <h4 class="list-group-item-heading">Hey, I don't have a remote!</h4>
+              <p class="list-group-item-text">
+                <em>Stay calm.</em> If you do not wish to use a remote, remember that the students can always
+                remove themselves from the queue. Just tell them to remove themselves after you have helped them.
+              </p>
+              <p class="list-group-item-text">
+                You can also control the administrative interface using a keyboard or mouse.
+                Press <em>Enter</em> to remove the topmost student, and press <em>Backspace</em> to undo a removal. Or just click the buttons with your mouse.
+              </p>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <h3>Other stuff</h3>
+          
+          <ul class="list-group">
+            <li class="list-group-item">
+              <h4 class="list-group-item-heading">Curious?</h4>
+              <p class="list-group-item-text">
+                The server-side software is written in Node.js, and the client uses HTML5 with a bunch of JavaScript.
+                In this way, we can get an event-driven system, without polling, using WebSocket support in
+                modern browsers.
+                You can view the source code of the system at GitHub,
+                <a href="https://github.com/zozs/labqueue">https://github.com/zozs/labqueue</a>
+              </p>
+            </li>
+            <li class="list-group-item">
+              <h4 class="list-group-item-heading">License?</h4>
+              <p class="list-group-item-text">
+                The code is licensed under the ISC license, see the <a href="https://github.com/zozs/labqueue/blob/master/LICENSE">LICENSE</a> file.
+              </p>
+            </li>
+            <li class="list-group-item">
+              <h4 class="list-group-item-heading">Does anyone use it?</h4>
+              <p class="list-group-item-text">
+                The system is currently used at the <a href="http://www.eit.lth.se">Department of Electrical and Information Technology</a> at <a href="http://www.lunduniversity.lu.se">Lund University</a>.
+              </p>
+            </li>
+	    <li class="list-group-item">
+              <h4 class="list-group-item-heading">Extras?</h4>
+	      <p class="list-group-item-text">
+	        Sure! Look for example at
+                <a href="https://github.com/zozs/labqueue-monitor">https://github.com/zozs/labqueue-monitor</a>
+		which provides a monitoring solution for multiple queues.
+          </ul>
+        </div>
+      </div>
+    </div> <!-- /container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
